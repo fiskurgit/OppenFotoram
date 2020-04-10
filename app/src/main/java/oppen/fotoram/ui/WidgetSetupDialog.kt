@@ -29,6 +29,7 @@ class WidgetSetupDialog(
     }
 
     view.cancel_widget_button.setOnClickListener {
+      onCancel.invoke()
       dismiss()
     }
 
