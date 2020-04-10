@@ -1,0 +1,2 @@
+rootProject.name='Fotoram'
+include ':app'

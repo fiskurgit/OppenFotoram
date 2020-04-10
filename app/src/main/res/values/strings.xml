@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Fotoram</string>
+    <string name="high_quality">High quality</string>
+    <string name="change_image">Change Image</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+</resources>
