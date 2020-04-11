@@ -1,11 +1,11 @@
 package oppen.fotoram.ui
 
-import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.view.ContextThemeWrapper
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.setup_dialog.view.*
 import oppen.fotoram.R
@@ -17,7 +17,10 @@ class WidgetSetupDialog(
   private val onBuild: (dialog: WidgetSetupDialog, uri: Uri?, highQuality: Boolean) -> Unit): BottomSheetDialogFragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    return inflater.inflate(R.layout.setup_dialog, container, false)
+    //return inflater.inflate(R.layout.setup_dialog, container, false)
+    val contextThemeWrapper = ContextThemeWrapper(activity, R.style.AppTheme)
+    return inflater.cloneInContext(contextThemeWrapper).inflate(R.layout.setup_dialog, container, false)
+
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,7 +37,16 @@ class WidgetSetupDialog(
     }
 
     view.make_widget_button.setOnClickListener {
-      onBuild(this, imageUri, view.quality_switch.isChecked)
+
+      val highQuality = view.quality_switch.isChecked
+
+      view.progress.visibility = View.VISIBLE
+      view.make_widget_button.isEnabled = false
+      view.change_image_button.isEnabled = false
+      view.cancel_widget_button.isEnabled = false
+      view.quality_switch.isEnabled = false
+
+      onBuild(this, imageUri, highQuality)
     }
   }
 }

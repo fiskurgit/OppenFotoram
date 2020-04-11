@@ -7,6 +7,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import oppen.fotoram.ui.WidgetSetupDialog
 
 private const val SELECT_PICTURE_REQ = 0
@@ -40,7 +42,9 @@ class WidgetSetupActivity : AppCompatActivity() {
           finish()
         }) { dialog, uri, highQuality ->
           //onBuild
-          buildWidget(dialog, uri, highQuality)
+          GlobalScope.launch {
+            buildWidget(dialog, uri, highQuality)
+          }
         }
         dialog.show(supportFragmentManager.beginTransaction(), "widget_setup")
       }
@@ -52,20 +56,22 @@ class WidgetSetupActivity : AppCompatActivity() {
   }
 
   private fun buildWidget(dialog: WidgetSetupDialog, uri: Uri?, highQuality: Boolean){
-    val appWidgetManager = AppWidgetManager.getInstance(this)
-    val views = RemoteViews(packageName, R.layout.widget_layout)
-
     ImageIO.storeImage(this, widgetId, uri, highQuality) { osUri: Uri? ->
-      views.setImageViewUri(R.id.fotoram_widget_image, Uri.parse(""))
-      views.setImageViewUri(R.id.fotoram_widget_image, osUri)
-      appWidgetManager.updateAppWidget(widgetId, views)
+      runOnUiThread {
+        val appWidgetManager = AppWidgetManager.getInstance(this)
+        val views = RemoteViews(packageName, R.layout.widget_layout)
 
-      val resultValue = Intent()
-      resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-      setResult(Activity.RESULT_OK, resultValue)
+        views.setImageViewUri(R.id.fotoram_widget_image, Uri.parse(""))
+        views.setImageViewUri(R.id.fotoram_widget_image, osUri)
+        appWidgetManager.updateAppWidget(widgetId, views)
 
-      finish()
-      dialog.dismiss()
+        val resultValue = Intent()
+        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+        setResult(Activity.RESULT_OK, resultValue)
+
+        finish()
+        dialog.dismiss()
+      }
     }
   }
 }
