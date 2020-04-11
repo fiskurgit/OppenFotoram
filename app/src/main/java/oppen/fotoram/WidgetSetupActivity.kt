@@ -55,7 +55,7 @@ class WidgetSetupActivity : AppCompatActivity() {
     val appWidgetManager = AppWidgetManager.getInstance(this)
     val views = RemoteViews(packageName, R.layout.widget_layout)
 
-    val osUri = ImageIO.storeImage(this, widgetId, uri, highQuality)
+    ImageIO.storeImage(this, widgetId, uri, highQuality) { osUri: Uri? ->
       views.setImageViewUri(R.id.fotoram_widget_image, Uri.parse(""))
       views.setImageViewUri(R.id.fotoram_widget_image, osUri)
       appWidgetManager.updateAppWidget(widgetId, views)
@@ -66,5 +66,6 @@ class WidgetSetupActivity : AppCompatActivity() {
 
       finish()
       dialog.dismiss()
+    }
   }
 }
